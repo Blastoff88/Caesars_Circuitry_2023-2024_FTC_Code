@@ -27,11 +27,11 @@ public class MecanumDrivetrain extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "M3");
         arm = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(DcMotor.class, "intake");
-
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+//Need to flip polarity of motors
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
         arm.setDirection(DcMotor.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized");
@@ -44,7 +44,7 @@ public class MecanumDrivetrain extends LinearOpMode {
             telemetry.addData("Status", "Running");
             telemetry.update();
 
-            float x = -gamepad1.left_stick_x;
+            float x = gamepad1.left_stick_x;
             float y = gamepad1.left_stick_y;
             float turn = -gamepad1.right_stick_x;
 
@@ -53,7 +53,7 @@ public class MecanumDrivetrain extends LinearOpMode {
 
             float sin = (float)Math.sin(theta -Math.PI/4);
             float cos = (float)Math.cos(theta -Math.PI/4);
-            float max = (float)Math.max(Math.abs(sin), Math.abs(cos));
+            float max = Math.max(Math.abs(sin), Math.abs(cos)); // I deleted float b/c it is redundant
 
             float lf_power = power * cos/max + turn;
             float lb_power = power * sin/max + turn;
