@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -66,9 +65,8 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: AprilTag", group = "Concept")
-@Disabled
-public class PreviewdayAutonomousAprilTag extends LinearOpMode {
+@TeleOp
+public class PreviewDayAutonomousAprilTag extends LinearOpMode {
     public DcMotor frontLeft;
     public DcMotor backLeft;
     public DcMotor frontRight;
@@ -153,21 +151,21 @@ public class PreviewdayAutonomousAprilTag extends LinearOpMode {
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
 
-            // The following default settings are available to un-comment and edit as needed.
-            //.setDrawAxes(false)
-            //.setDrawCubeProjection(false)
-            //.setDrawTagOutline(true)
-            //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-            //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-            //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                // The following default settings are available to un-comment and edit as needed.
+                //.setDrawAxes(false)
+                //.setDrawCubeProjection(false)
+                //.setDrawTagOutline(true)
+                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
 
-            // == CAMERA CALIBRATION ==
-            // If you do not manually specify calibration parameters, the SDK will attempt
-            // to load a predefined calibration for your camera.
-            //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-            // ... these parameters are fx, fy, cx, cy.
+                // == CAMERA CALIBRATION ==
+                // If you do not manually specify calibration parameters, the SDK will attempt
+                // to load a predefined calibration for your camera.
+                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+                // ... these parameters are fx, fy, cx, cy.
 
-            .build();
+                .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -234,12 +232,16 @@ public class PreviewdayAutonomousAprilTag extends LinearOpMode {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
-            if(Id == 1){
+            if(Id == 4){
                 frontRight.setPower(.5);
                 frontLeft.setPower(.5);
                 backRight.setPower(.5);
                 backLeft.setPower(.5);
                 sleep(miliseconds);
+                frontRight.setPower(0);
+                frontLeft.setPower(0);
+                backRight.setPower(0);
+                backLeft.setPower(0);
             }
             if(Id == 2){
                 frontRight.setPower(-.5);
@@ -247,6 +249,10 @@ public class PreviewdayAutonomousAprilTag extends LinearOpMode {
                 backRight.setPower(.5);
                 backLeft.setPower(-.5);
                 sleep(miliseconds);
+                frontRight.setPower(0);
+                frontLeft.setPower(0);
+                backRight.setPower(0);
+                backLeft.setPower(0);
             }
             if(Id == 3){
                 frontRight.setPower(-.5);
@@ -254,28 +260,36 @@ public class PreviewdayAutonomousAprilTag extends LinearOpMode {
                 backRight.setPower(-.5);
                 backLeft.setPower(-.5);
                 sleep(miliseconds);
+                frontRight.setPower(0);
+                frontLeft.setPower(0);
+                backRight.setPower(0);
+                backLeft.setPower(0);
             }
-            if(Id == 4){
+            if(Id == 5){
                 frontRight.setPower(.5);
                 frontLeft.setPower(-.5);
                 backRight.setPower(-.5);
                 backLeft.setPower(.5);
                 sleep(miliseconds);
+                frontRight.setPower(0);
+                frontLeft.setPower(0);
+                backRight.setPower(0);
+                backLeft.setPower(0);
             }
         }   // end for() loop
         // Add "key" information to telemetry
         telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
-            if(Id == 1){
-                frontRight.setPower(1);
-                frontLeft.setPower(1);
-                backLeft.setPower(1);
-                backRight.setPower(1);
-                sleep(miliseconds);
-            }
-            }
+        if(Id == 1){
+            frontRight.setPower(1);
+            frontLeft.setPower(1);
+            backLeft.setPower(1);
+            backRight.setPower(1);
+            sleep(miliseconds);
+        }
+    }
 
-    }   // end method telemetryAprilTag()
+}   // end method telemetryAprilTag()
 
-   // end class
+// end class
