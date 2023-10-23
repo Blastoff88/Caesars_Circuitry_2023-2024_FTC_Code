@@ -26,7 +26,7 @@ public class MainTeleOp extends OpMode {
 
     public boolean intakeActive = false;
 
-    public double speedMultiplier = 1;
+    public double speedMultiplier = 0.5;
 
     public double microMovementSpeed = 0.05;
 
@@ -66,7 +66,7 @@ public class MainTeleOp extends OpMode {
         telemetry.addData("Status", "Running");
         telemetry.update();
 
-        if (gamepad1.right_trigger > 0 || isBoosted) {
+        if (gamepad1.right_bumper) {
             Boost();
         }
 
@@ -105,11 +105,12 @@ public class MainTeleOp extends OpMode {
 
         MicroMovement();
 
-        if (gamepad1.right_bumper || gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) {
             Intake();
         }
 
         Arm();
+        telemetry.addData("Is Boosted: ", isBoosted);
     }
 
     public void MicroMovement() {
@@ -143,25 +144,23 @@ public class MainTeleOp extends OpMode {
     }
 
     public void Boost() {
-        if (gamepad1.right_trigger > 0 & !isBoosted) {
+        if (gamepad1.right_bumper & !isBoosted) {
             isBoosted = true;
             speedMultiplier = 1;
         }
-        else {
+        else if (gamepad1.right_bumper & isBoosted) {
             isBoosted = false;
             speedMultiplier = 0.5;
         }
-
-        telemetry.addData("Is Boosted: ", isBoosted);
     }
 
     public void Intake() {
-        if (gamepad1.right_bumper) {
+        if (gamepad1.left_bumper && !intakeActive) {
             intakeActive = true;
             intake.setPower(1.0);
             intakePush.setPosition(.5);
         }
-        else if (gamepad1.left_bumper) {
+        else if (gamepad1.left_bumper && intakeActive) {
             intakeActive = false;
             intake.setPower(0.0);
             intakePush.setPosition(0);
