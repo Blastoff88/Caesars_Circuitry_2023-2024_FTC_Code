@@ -23,7 +23,7 @@ public class AutonomousCameraTest extends OpMode{
     @Override
     public void init() {
 
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "webcam");
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam1");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 

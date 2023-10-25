@@ -19,8 +19,8 @@ public class MainTeleOp extends OpMode {
     public DcMotor intake;
     public Servo intakePush;
 
-    public static double armDegrees = 0.0;
-    public double ticks_in_degrees = 537.7/360.0;
+    public static double armDegrees = 90.0;
+    public double ticks_in_degrees = 1425.1/360.0;
 
     public boolean isBoosted = false;
 
@@ -72,14 +72,14 @@ public class MainTeleOp extends OpMode {
 
         float x = -gamepad1.left_stick_x;
         float y = gamepad1.left_stick_y;
-        float turn = -gamepad1.right_stick_x;
+        float turn = -gamepad1.right_stick_x/2;
 
         float theta = (float)Math.atan2(y,x);
         float power = (float)Math.hypot(x,y);
 
         float sin = (float)Math.sin(theta -Math.PI/4);
         float cos = (float)Math.cos(theta -Math.PI/4);
-        float max = (float)Math.max(Math.abs(sin), Math.abs(cos));
+        float max = Math.max(Math.abs(sin), Math.abs(cos));
 
         float lf_power = power * cos/max + turn;
         float lb_power = power * sin/max + turn;
@@ -172,7 +172,7 @@ public class MainTeleOp extends OpMode {
     public void Arm() {
         //Add arm code two options run to position or pidf controller
         //Run To Position Code
-        arm.setPower(.005);
+        arm.setPower(.5);
         arm.setTargetPosition((int)(ticks_in_degrees*armDegrees));
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
