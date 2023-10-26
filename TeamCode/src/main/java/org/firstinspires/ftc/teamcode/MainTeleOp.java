@@ -19,14 +19,14 @@ public class MainTeleOp extends OpMode {
     public DcMotor intake;
     public Servo intakePush;
 
-    public static double armDegrees = 0.0;
-    public double ticks_in_degrees = 537.7/360.0;
+    public static double armDegrees = 90.0;
+    public double ticks_in_degrees = 1425.1/360.0;
 
     public boolean isBoosted = false;
 
     public boolean intakeActive = false;
 
-    public double speedMultiplier = 1;
+    public double speedMultiplier = 0.5;
 
     public double microMovementSpeed = 0.05;
 
@@ -66,20 +66,20 @@ public class MainTeleOp extends OpMode {
         telemetry.addData("Status", "Running");
         telemetry.update();
 
-        if (gamepad1.right_trigger > 0 || isBoosted) {
+        if (gamepad1.right_bumper) {
             Boost();
         }
 
         float x = -gamepad1.left_stick_x;
         float y = gamepad1.left_stick_y;
-        float turn = -gamepad1.right_stick_x;
+        float turn = -gamepad1.right_stick_x/2;
 
         float theta = (float)Math.atan2(y,x);
         float power = (float)Math.hypot(x,y);
 
         float sin = (float)Math.sin(theta -Math.PI/4);
         float cos = (float)Math.cos(theta -Math.PI/4);
-        float max = (float)Math.max(Math.abs(sin), Math.abs(cos));
+        float max = Math.max(Math.abs(sin), Math.abs(cos));
 
         float lf_power = power * cos/max + turn;
         float lb_power = power * sin/max + turn;
@@ -105,11 +105,12 @@ public class MainTeleOp extends OpMode {
 
         MicroMovement();
 
-        if (gamepad1.right_bumper || gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) {
             Intake();
         }
 
         Arm();
+        telemetry.addData("Is Boosted: ", isBoosted);
     }
 
     public void MicroMovement() {
@@ -143,25 +144,23 @@ public class MainTeleOp extends OpMode {
     }
 
     public void Boost() {
-        if (gamepad1.right_trigger > 0 & !isBoosted) {
+        if (gamepad1.right_bumper & !isBoosted) {
             isBoosted = true;
             speedMultiplier = 1;
         }
-        else {
+        else if (gamepad1.right_bumper & isBoosted) {
             isBoosted = false;
             speedMultiplier = 0.5;
         }
-
-        telemetry.addData("Is Boosted: ", isBoosted);
     }
 
     public void Intake() {
-        if (gamepad1.right_bumper) {
+        if (gamepad1.left_bumper && !intakeActive) {
             intakeActive = true;
             intake.setPower(1.0);
             intakePush.setPosition(.5);
         }
-        else if (gamepad1.left_bumper) {
+        else if (gamepad1.left_bumper && intakeActive) {
             intakeActive = false;
             intake.setPower(0.0);
             intakePush.setPosition(0);
@@ -173,7 +172,7 @@ public class MainTeleOp extends OpMode {
     public void Arm() {
         //Add arm code two options run to position or pidf controller
         //Run To Position Code
-        arm.setPower(.005);
+        arm.setPower(.5);
         arm.setTargetPosition((int)(ticks_in_degrees*armDegrees));
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
