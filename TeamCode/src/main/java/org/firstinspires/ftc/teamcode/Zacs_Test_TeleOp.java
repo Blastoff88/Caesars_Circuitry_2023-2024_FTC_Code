@@ -175,7 +175,7 @@ public class Zacs_Test_TeleOp extends OpMode {
 
         }
 
-    public void ActivateIntake() throws InterruptedException {
+    public void ActivateIntake( )throws InterruptedException {
         if((gamepad1.left_bumper || gamepad2.left_bumper) & !intakeActive) {
             intakePush.setPosition(.5);
             intake.setPower(.2);
