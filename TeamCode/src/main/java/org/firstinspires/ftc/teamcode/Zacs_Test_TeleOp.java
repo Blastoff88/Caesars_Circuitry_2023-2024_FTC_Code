@@ -78,8 +78,11 @@ public class Zacs_Test_TeleOp extends OpMode {
         float turn = -gamepad1.right_stick_x / 2;
 
         FindJoystickMovement(x, y, turn);
+
         try {
             FindMovementMultiplier();
+            ActivateIntake();
+            RightControlActivation();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -96,18 +99,6 @@ public class Zacs_Test_TeleOp extends OpMode {
         backRight.setPower(rightBackPower * speedMultiplier);
 
         MoveArm();
-
-        try {
-            ActivateIntake();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            RightControlActivation();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
         AddTelemetry();
         telemetry.update();
