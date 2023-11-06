@@ -40,10 +40,10 @@ public class Zacs_Test_TeleOp extends OpMode {
 
     @Override
     public void init() {
-        frontLeft = hardwareMap.get(DcMotor.class, "M2");
-        backLeft = hardwareMap.get(DcMotor.class, "M1");
-        frontRight = hardwareMap.get(DcMotor.class, "M4");
-        backRight = hardwareMap.get(DcMotor.class, "M3");
+        frontLeft = hardwareMap.get(DcMotor.class, "M1");
+        backLeft = hardwareMap.get(DcMotor.class, "M2");
+        frontRight = hardwareMap.get(DcMotor.class, "M3");
+        backRight = hardwareMap.get(DcMotor.class, "M4");
         arm = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
         intakePush = hardwareMap.get(Servo.class, "intakeServo");
@@ -141,7 +141,7 @@ public class Zacs_Test_TeleOp extends OpMode {
             speedFactor = "Slow";
             Thread.sleep(500);
         }
-        else if ((gamepad1.dpad_down || gamepad2.dpad_up) && (isSlowed || isBoosted)) {
+        else if ((gamepad1.dpad_down || gamepad1.dpad_up) && (isSlowed || isBoosted)) {
             isSlowed = false;
             isBoosted = false;
             speedMultiplier = 0.75;
