@@ -65,7 +65,9 @@ public class Zacs_Test_TeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intakePush.setPosition(1);
+        intakePush.setPosition(.1);
+
+        armDegrees=0;
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
@@ -98,7 +100,11 @@ public class Zacs_Test_TeleOp extends OpMode {
         frontRight.setPower(rightFrontPower * speedMultiplier);
         backRight.setPower(rightBackPower * speedMultiplier);
 
-        MoveArm();
+        try {
+            MoveArm();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         AddTelemetry();
         telemetry.update();
@@ -150,7 +156,7 @@ public class Zacs_Test_TeleOp extends OpMode {
         }
     }
 
-    public void MoveArm() {
+    public void MoveArm() throws InterruptedException {
         if (RightControl) {
             if (gamepad2.right_stick_y < 0) {
                 armDegrees += .5;
@@ -159,7 +165,26 @@ public class Zacs_Test_TeleOp extends OpMode {
                 armDegrees -= .5;
             }
         }
+
+        else if (gamepad1.x) {
+            armDegrees = 10;
+
+            arm.setPower(.5);
+            arm.setTargetPosition((int) (ticks_in_degrees * armDegrees));
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            while(arm.isBusy()) {
+
+            }
+
+            arm.setPower(0);
+            Thread.sleep(1000);
+            arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
         else {
+
             if (gamepad1.y) {
                 armDegrees = 138;
             } else if (gamepad1.b) {
@@ -167,31 +192,23 @@ public class Zacs_Test_TeleOp extends OpMode {
             } else if (gamepad1.a) {
                 armDegrees = 228;
             }
-        }
 
-        arm.setPower(.5);
-        arm.setTargetPosition((int) (ticks_in_degrees * armDegrees));
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+            arm.setPower(.5);
+            arm.setTargetPosition((int) (ticks_in_degrees * armDegrees));
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+    }
 
     public void ActivateIntake( )throws InterruptedException {
-        if((gamepad1.left_bumper || gamepad2.left_bumper) & !intakeActive) {
-            intakePush.setPosition(.5);
-            intake.setPower(.2);
-            intakeDirection = "Forward";
-            intakeActive = true;
-            Thread.sleep(500);
-        }
-        else if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & !intakeActive) {
-            intakePush.setPosition(.5);
+        if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & !intakeActive) {
+            intakePush.setPosition(.45);
             intake.setPower(-.2);
             intakeDirection = "Backwards";
             intakeActive = true;
             Thread.sleep(500);
         }
         else if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0 || gamepad1.left_bumper || gamepad2.left_bumper) & intakeActive) {
-            intakePush.setPosition(0);
+            intakePush.setPosition(0.1);
             intake.setPower(0);
             intakeDirection = "None";
             intakeActive = false;
@@ -212,28 +229,28 @@ public class Zacs_Test_TeleOp extends OpMode {
     }
 
     public void AddTelemetry() {
-        telemetry.addLine("\u001B[1m" + "Intake");
+        telemetry.addLine("Intake");
         telemetry.addData("Intake Direction: ", intakeDirection);
         telemetry.addData("Intake Active: ", intakeActive);
 
         telemetry.addLine("\n");
 
-        telemetry.addLine("\u001B[1m" + "Arm");
+        telemetry.addLine("Arm");
         telemetry.addData("Arm Angle: ", armDegrees);
 
         telemetry.addLine("\n");
 
-        telemetry.addLine("\u001B[1m" + "Right Control");
+        telemetry.addLine("Right Control");
         telemetry.addData("Right Control: ", RightControl);
 
         telemetry.addLine("\n");
 
-        telemetry.addLine("\u001B[1m" + "Wheel Speed Factor");
+        telemetry.addLine("Wheel Speed Factor");
         telemetry.addData("Speed Factor: ", speedFactor);
 
         telemetry.addLine("\n");
 
-        telemetry.addLine("\u001B[1m" + "Wheel Speeds");
+        telemetry.addLine("Wheel Speeds");
         telemetry.addData("Left Front Power: ", lf_power * speedMultiplier);
         telemetry.addData("Left Back Power: ", lb_power * speedMultiplier);
         telemetry.addData("Right Front Power: ", rf_power * speedMultiplier);
