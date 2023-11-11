@@ -65,7 +65,7 @@ public class Zacs_Test_TeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intakePush.setPosition(.1);
+        intakePush.setPosition(0);
 
         armDegrees=0;
 
@@ -174,7 +174,6 @@ public class Zacs_Test_TeleOp extends OpMode {
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             while(arm.isBusy()) {
-
             }
 
             arm.setPower(0);
@@ -203,11 +202,11 @@ public class Zacs_Test_TeleOp extends OpMode {
         if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & !intakeActive) {
             intakePush.setPosition(.45);
             intake.setPower(-.2);
-            intakeDirection = "Backwards";
+            intakeDirection = "Forward";
             intakeActive = true;
             Thread.sleep(500);
         }
-        else if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0 || gamepad1.left_bumper || gamepad2.left_bumper) & intakeActive) {
+        else if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & intakeActive) {
             intakePush.setPosition(0.1);
             intake.setPower(0);
             intakeDirection = "None";
