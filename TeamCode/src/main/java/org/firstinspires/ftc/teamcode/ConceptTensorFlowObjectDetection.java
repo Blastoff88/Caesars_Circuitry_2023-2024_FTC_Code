@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -38,12 +40,13 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.tensorflow.lite.TensorFlowLite;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import java.util.List;
 
 /*
@@ -53,7 +56,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
+@Autonomous(name = "Concept: TensorFlow Object Detection", group = "Concept")
 
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
@@ -67,7 +70,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-       "Pixel",
+            "Pixel",
     };
 
     /**
@@ -83,7 +86,12 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     public DcMotor backLeft;
     public DcMotor frontRight;
     public DcMotor backRight;
-
+    public DcMotor arm;
+    public DcMotor intake;
+    public Servo claw;
+    public Servo ServoArm;
+    public int armServoPos = 50; //Will need to change depending on hardware
+    public int armMotorPos = 150;//Will need to change depending on hardware
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -98,15 +106,74 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "M1");
         frontRight = hardwareMap.get(DcMotor.class, "M4");
         backRight = hardwareMap.get(DcMotor.class, "M3");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        intake = hardwareMap.get(DcMotor.class, "intakeMotor");
+        claw = hardwareMap.get(Servo.class, "claw");
+        ServoArm = hardwareMap.get(Servo.class, "ServoArm");
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
+                tfod.getRecognitions();
                 frontLeft.setPower(1);
+                frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 backLeft.setPower(1);
                 frontRight.setPower(1);
                 backRight.setPower(1);
                 wait(1000);
+                frontLeft.setPower(0);
+                backLeft.setPower(0);
+                frontRight.setPower(0);
+                backRight.setPower(0);
+
+
                 telemetryTfod();
+                if(tfod.equals(1)){
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(.5);
+                    arm.setTargetPosition(armMotorPos);
+                    claw.setPosition(180);
+                }
+                else{
+                    frontLeft.setPower(-1);
+                    backLeft.setPower(-1);
+                    frontRight.setPower(1);
+                    backRight.setPower(1);
+                    wait(500);
+                    frontLeft.setPower(0);
+                    backLeft.setPower(0);
+                    frontRight.setPower(0);
+                    backRight.setPower(0);
+                }
+                if(tfod.equals(1)){
+                    //make arm code
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(.5);
+                    arm.setTargetPosition(150);
+                    claw.setPosition(180);
+                }
+                else{
+                    frontLeft.setPower(1);
+                    backLeft.setPower(1);
+                    frontRight.setPower(-1);
+                    backRight.setPower(-1);
+                    wait(1000);
+                    frontLeft.setPower(0);
+                    backLeft.setPower(0);
+                    frontRight.setPower(0);
+                    backRight.setPower(0);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm.setPower(.5);
+                    arm.setTargetPosition(armMotorPos);
+                    ServoArm.setPosition(armServoPos);
+                    claw.setPosition(180);//set to neg depending on where claw servo is
+                }
+
+
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -136,23 +203,23 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
 
-            // With the following lines commented out, the default TfodProcessor Builder
-            // will load the default model for the season. To define a custom model to load, 
-            // choose one of the following:
-            //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
-            //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-            //.setModelAssetName(TFOD_MODEL_ASSET)
-            //.setModelFileName(TFOD_MODEL_FILE)
+                // With the following lines commented out, the default TfodProcessor Builder
+                // will load the default model for the season. To define a custom model to load,
+                // choose one of the following:
+                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
+                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
+                //.setModelAssetName(TFOD_MODEL_ASSET)
+                //.setModelFileName(TFOD_MODEL_FILE)
 
-            // The following default settings are available to un-comment and edit as needed to 
-            // set parameters for custom models.
-            //.setModelLabels(LABELS)
-            //.setIsModelTensorFlow2(true)
-            //.setIsModelQuantized(true)
-            //.setModelInputSize(300)
-            //.setModelAspectRatio(16.0 / 9.0)
+                // The following default settings are available to un-comment and edit as needed to
+                // set parameters for custom models.
+                //.setModelLabels(LABELS)
+                //.setIsModelTensorFlow2(true)
+                //.setIsModelQuantized(true)
+                //.setModelInputSize(300)
+                //.setModelAspectRatio(16.0 / 9.0)
 
-            .build();
+                .build();
 
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -168,7 +235,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         //builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        //builder.enableLiveView(true);
+        builder.enableLiveView(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
         //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
@@ -185,7 +252,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.8f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
