@@ -18,12 +18,15 @@ public class Zacs_Test_TeleOp extends OpMode {
     public DcMotor arm;
     public DcMotor intake;
     public Servo intakePush;
+    public Servo Sarm;
+    public Servo Claw;
 
-    public static double armDegrees = 0;
+    public int armDegrees = 0;
+    public double SarmDegrees = 0;
+    public double ClawDegrees = 0;
     public double ticks_in_degrees = 1425.1 / 360.0;
 
-    public boolean isBoosted = false;
-    public boolean isSlowed = false;
+
     public String speedFactor = "None";
 
     public boolean RightControl = false;
@@ -47,6 +50,8 @@ public class Zacs_Test_TeleOp extends OpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
         intakePush = hardwareMap.get(Servo.class, "intakeServo");
+        Sarm = hardwareMap.get(Servo.class, "ArmServo");
+        Claw = hardwareMap.get(Servo.class, "Claw");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -81,13 +86,11 @@ public class Zacs_Test_TeleOp extends OpMode {
 
         FindJoystickMovement(x, y, turn);
 
-        try {
+
             FindMovementMultiplier();
-            ActivateIntake();
-            RightControlActivation();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+            //ActivateIntake();
+            //RightControlActivation();
+
 
         float leftFrontPower = lf_power;
         float leftBackPower = lb_power;
@@ -132,57 +135,50 @@ public class Zacs_Test_TeleOp extends OpMode {
 
     }
 
-    public void FindMovementMultiplier() throws InterruptedException {
-        if (gamepad1.dpad_up && !isBoosted) {
-            isBoosted = true;
-            isSlowed = false;
+    public void FindMovementMultiplier() {
+        if (gamepad1.dpad_up) {
             speedMultiplier = 2.5;
             speedFactor = "Boosted";
-            Thread.sleep(500);
+
         }
-        else if (gamepad1.dpad_down && !isSlowed) {
-            isSlowed = true;
-            isBoosted = false;
+        else if (gamepad1.dpad_left) {
             speedMultiplier = .25;
             speedFactor = "Slow";
-            Thread.sleep(500);
+
         }
-        else if ((gamepad1.dpad_down || gamepad1.dpad_up) && (isSlowed || isBoosted)) {
-            isSlowed = false;
-            isBoosted = false;
+        else if (gamepad1.dpad_down) {
             speedMultiplier = 0.75;
             speedFactor = "Normal";
-            Thread.sleep(500);
+
         }
     }
 
     public void MoveArm() throws InterruptedException {
-        if (RightControl) {
-            if (gamepad2.right_stick_y < 0) {
-                armDegrees += .5;
-            }
-            else if (gamepad2.right_stick_y > 0) {
-                armDegrees -= .5;
-            }
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(.5);
+        arm.setTargetPosition(armDegrees);
+        Sarm.setPosition(SarmDegrees);
+        Claw.setPosition(ClawDegrees);
         }
 
-        else if (gamepad1.x) {
-            armDegrees = 10;
+        //else if (gamepad1.x) {
+            //armDegrees = 10;
 
-            arm.setPower(.5);
-            arm.setTargetPosition((int) (ticks_in_degrees * armDegrees));
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //arm.setPower(.5);
+            //arm.setTargetPosition((int) (ticks_in_degrees * armDegrees));
+            //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            while(arm.isBusy()) {
-            }
+            //while(arm.isBusy()) {
+            //}
 
-            arm.setPower(0);
-            Thread.sleep(1000);
-            arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
+            //arm.setPower(0);
+            //Thread.sleep(1000);
+            //arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //}
 
-        else {
+
+        /*else {
 
             if (gamepad1.y) {
                 armDegrees = 138;
@@ -196,9 +192,9 @@ public class Zacs_Test_TeleOp extends OpMode {
             arm.setTargetPosition((int) (ticks_in_degrees * armDegrees));
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-    }
+    } */
 
-    public void ActivateIntake( )throws InterruptedException {
+    /*public void ActivateIntake( )throws InterruptedException {
         if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & !intakeActive) {
             intakePush.setPosition(.45);
             intake.setPower(-.2);
@@ -213,9 +209,15 @@ public class Zacs_Test_TeleOp extends OpMode {
             intakeActive = false;
             Thread.sleep(500);
         }
-    }
+        if(gamepad1.right_trigger>0){
+            intake.setPower(-.75);
+        }
+        else{
+            intake.setPower(0);
+        }
+    } */
 
-    public void RightControlActivation() throws InterruptedException {
+    /*public void RightControlActivation() throws InterruptedException {
         if(gamepad2.right_bumper && !RightControl) {
             RightControl = true;
             Thread.sleep(500);
@@ -225,7 +227,7 @@ public class Zacs_Test_TeleOp extends OpMode {
             RightControl = false;
             Thread.sleep(500);
         }
-    }
+    }*/
 
     public void AddTelemetry() {
         telemetry.addLine("Intake");
