@@ -17,7 +17,7 @@ public class MainTeleOp extends OpMode {
     public DcMotor backRight;
     public DcMotor arm;
     public DcMotor intake;
-    public Servo intakePush;
+    public Servo wall;
 
     public static double armDegrees = 90.0;
     public double ticks_in_degrees = 1425.1/360.0;
@@ -38,7 +38,7 @@ public class MainTeleOp extends OpMode {
         backRight = hardwareMap.get(DcMotor.class, "M3");
         arm = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
-        intakePush = hardwareMap.get(Servo.class, "intakeServo");
+        wall = hardwareMap.get(Servo.class, "intakeServo");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -57,7 +57,7 @@ public class MainTeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intakePush.setPosition(1);
+        wall.setPosition(1);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
@@ -158,12 +158,12 @@ public class MainTeleOp extends OpMode {
         if (gamepad1.left_bumper && !intakeActive) {
             intakeActive = true;
             intake.setPower(1.0);
-            intakePush.setPosition(.5);
+            wall.setPosition(.5);
         }
         else if (gamepad1.left_bumper && intakeActive) {
             intakeActive = false;
             intake.setPower(0.0);
-            intakePush.setPosition(0);
+            wall.setPosition(0);
         }
 
         telemetry.addData("Intake Active: ", intakeActive);

@@ -17,7 +17,7 @@ public class JackDrive extends OpMode {
     public DcMotor backRight;
     public DcMotor arm;
     public DcMotor intake;
-    public Servo intakePush;
+    public Servo wall;
 
     public static double armDegrees = 0;
     public double ticks_in_degrees = 1425.1 / 360.0;
@@ -47,7 +47,7 @@ public class JackDrive extends OpMode {
         backRight = hardwareMap.get(DcMotor.class, "M3");
         arm = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
-        intakePush = hardwareMap.get(Servo.class, "intakeServo");
+        wall = hardwareMap.get(Servo.class, "intakeServo");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -66,7 +66,7 @@ public class JackDrive extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intakePush.setPosition(1);
+        wall.setPosition(1);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
@@ -178,14 +178,14 @@ public class JackDrive extends OpMode {
 
     public void ActivateIntake( )throws InterruptedException {
         if(gamepad1.left_bumper & !intakeActive) {
-            intakePush.setPosition(.5);
+            wall.setPosition(.5);
             intake.setPower(.2);
             intakeDirection = "Forward";
             intakeActive = true;
             Thread.sleep(500);
         }
         else if(gamepad1.right_bumper & intakeActive) {
-            intakePush.setPosition(0);
+            wall.setPosition(0);
             intake.setPower(0);
             intakeDirection = "None";
             intakeActive = false;

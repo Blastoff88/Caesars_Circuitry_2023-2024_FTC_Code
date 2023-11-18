@@ -17,12 +17,12 @@ public class Zacs_Test_TeleOp extends OpMode {
     public DcMotor backRight;
     public DcMotor arm;
     public DcMotor intake;
-    public Servo intakePush;
-    public Servo Sarm;
+    public Servo wall;
+    public Servo Sarm1;
     public Servo Claw;
 
     public int armDegrees = 0;
-    public double SarmDegrees = 0;
+    public double Sarm1Degrees = 0;
     public double ClawDegrees = 0;
     public double ticks_in_degrees = 1425.1 / 360.0;
 
@@ -49,8 +49,8 @@ public class Zacs_Test_TeleOp extends OpMode {
         backRight = hardwareMap.get(DcMotor.class, "M4");
         arm = hardwareMap.get(DcMotor.class, "arm");
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
-        intakePush = hardwareMap.get(Servo.class, "intakeServo");
-        Sarm = hardwareMap.get(Servo.class, "ArmServo");
+        wall = hardwareMap.get(Servo.class, "intakeServo");
+        Sarm1 = hardwareMap.get(Servo.class, "ArmServo");
         Claw = hardwareMap.get(Servo.class, "Claw");
 
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -70,7 +70,7 @@ public class Zacs_Test_TeleOp extends OpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intakePush.setPosition(0);
+        wall.setPosition(0);
 
         armDegrees=0;
 
@@ -157,7 +157,7 @@ public class Zacs_Test_TeleOp extends OpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(.5);
         arm.setTargetPosition(armDegrees);
-        Sarm.setPosition(SarmDegrees);
+        Sarm1.setPosition(Sarm1Degrees);
         Claw.setPosition(ClawDegrees);
         }
 
@@ -196,14 +196,14 @@ public class Zacs_Test_TeleOp extends OpMode {
 
     /*public void ActivateIntake( )throws InterruptedException {
         if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & !intakeActive) {
-            intakePush.setPosition(.45);
+            wall.setPosition(.45);
             intake.setPower(-.2);
             intakeDirection = "Forward";
             intakeActive = true;
             Thread.sleep(500);
         }
         else if((gamepad1.left_trigger > 0 || gamepad2.left_trigger > 0) & intakeActive) {
-            intakePush.setPosition(0.1);
+            wall.setPosition(0.1);
             intake.setPower(0);
             intakeDirection = "None";
             intakeActive = false;
