@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -53,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Autonomous
 
-public class Auto1 extends LinearOpMode {
+public class REDFRONT extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -95,7 +95,7 @@ public class Auto1 extends LinearOpMode {
             headingCheck(0);
             BBlock(.5, 1100);
             //headingCheck(0);
-            RBlock(.5, 3850);
+            LBlock(.5,2660);
             break;
         }
     }

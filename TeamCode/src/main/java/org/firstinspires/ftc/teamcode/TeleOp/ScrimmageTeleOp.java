@@ -1,21 +1,29 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-    @Config
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+@Config
     @TeleOp
     public class ScrimmageTeleOp extends OpMode {
         public DcMotor frontLeft;
         public DcMotor backLeft;
         public DcMotor frontRight;
         public DcMotor backRight;
+
+        //public IMU imu;
+
         public Servo wall;
+        public Servo Plane;
 
         public String speedFactor = "None";
 
@@ -38,6 +46,7 @@ import com.qualcomm.robotcore.hardware.Servo;
             frontRight = hardwareMap.get(DcMotor.class, "M3");
             backRight = hardwareMap.get(DcMotor.class, "M4");
             wall = hardwareMap.get(Servo.class, "intakeServo");
+            Plane = hardwareMap.get(Servo.class, "planeServo");
 
             frontLeft.setDirection(DcMotor.Direction.FORWARD);
             backLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -49,10 +58,22 @@ import com.qualcomm.robotcore.hardware.Servo;
             frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+            /*frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+
             telemetry.addData("Status", "Initialized");
             telemetry.update();
 
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+//            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+//                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+//                    RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+//            ));
+//
+//            imu.initialize(parameters);
         }
 
         public void loop() {
@@ -105,19 +126,24 @@ import com.qualcomm.robotcore.hardware.Servo;
         }
 
         public void MoveArm() {
-            if (timeFlag == true) {
-                if (gamepad1.left_trigger > 0 & !wallActive) {
+                if (gamepad2.left_trigger > 0 || gamepad1.left_trigger > 0) {
                     wall.setPosition(.23);
-                    time = System.currentTimeMillis();
-                    timeSleep(5);
                 }
-                if (gamepad1.left_trigger > 0 & wallActive) {
+                if (gamepad2.right_trigger > 0 || gamepad1.right_trigger > 0) {
                     wall.setPosition(.29);
-                    time = System.currentTimeMillis();
-                    timeSleep(500);
                 }
-            }
-        }
+                if(gamepad2.left_bumper){
+                        Plane.setPosition(1);
+
+                    }
+
+                if(gamepad2.right_bumper){
+                        Plane.setPosition(.7);
+
+                    }
+                }
+
+
 
         public void timeSleep(double milliseconds) {
             timeFlag = false;
@@ -125,6 +151,7 @@ import com.qualcomm.robotcore.hardware.Servo;
                 timeFlag = true;
             }
         }
+
 
         public void AddTelemetry() {
             telemetry.addLine("Wheel Speed Factor");
