@@ -55,18 +55,16 @@ public class GyroDrive extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            imuDrive(.5,30.0,0.0);
+            imu.resetYaw();
+            imuDrive(.5,55.88,0.0);
+            imuDrive(.5,-45.0,0.0);
+            break;
         }
     }
 
     // Drive forward function with PID control
     public void imuDrive(double power, double distance, double targetHeading) {
         int targetTicks = (int) (distance / distancePerRotation);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         int frontLeftTarget = frontLeft.getCurrentPosition() + targetTicks;
         int backLeftTarget = backLeft.getCurrentPosition() + targetTicks;
@@ -83,9 +81,14 @@ public class GyroDrive extends LinearOpMode {
         frontRight.setPower(power);
         backRight.setPower(power);
 
-        double kp = 0.03; // Adjust proportional constant
-        double ki = 0.001; // Adjust integral constant
-        double kd = 0.01; // Adjust derivative constant
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        double kp = 1; // Adjust proportional constant
+        double ki = 0; // Adjust integral constant
+        double kd = 0; // Adjust derivative constant
 
         double integral = 0;
         double prevError = 0;

@@ -55,19 +55,20 @@ public class GyroAutonomous extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            imuDrive(.5,30.0,0.0);
-            imuStrafe(.5,30.0,0.0);
+            imu.resetYaw();
+            imuDrive(.5,55.88,0.0);
+            imuTurn(.5, 0.0);
+            imuDrive(.5,-45.0,0.0);
+            imuTurn(.5, 0.0);
+            imuStrafe(.5,70.0,0.0);
+            imuTurn(.5, 0.0);
+            break;
         }
     }
 
     // Drive forward function
     public void imuDrive(double power, double distance, double targetHeading) {
         int targetTicks = (int) (distance / distancePerRotation);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         int frontLeftTarget = frontLeft.getCurrentPosition() + targetTicks;
         int backLeftTarget = backLeft.getCurrentPosition() + targetTicks;
@@ -83,6 +84,11 @@ public class GyroAutonomous extends LinearOpMode {
         backLeft.setPower(power);
         frontRight.setPower(power);
         backRight.setPower(power);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         pidControl(power, targetHeading);
 
@@ -107,11 +113,6 @@ public class GyroAutonomous extends LinearOpMode {
     public void imuStrafe(double power, double distance, double targetHeading) {
         int targetTicks = (int) (distance / distancePerRotation);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         int frontLeftTarget = frontLeft.getCurrentPosition() + targetTicks;
         int backLeftTarget = backLeft.getCurrentPosition() - targetTicks;
         int frontRightTarget = frontRight.getCurrentPosition() - targetTicks;
@@ -127,6 +128,11 @@ public class GyroAutonomous extends LinearOpMode {
         frontRight.setPower(-power);
         backRight.setPower(power);
 
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         pidControl(power, targetHeading);
 
         // Stop motors and reset encoders after reaching the target position
@@ -139,13 +145,17 @@ public class GyroAutonomous extends LinearOpMode {
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     // PID control function
     private void pidControl(double power, double targetHeading) {
-        double kp = 0.03; // Adjust proportional constant
-        double ki = 0.001; // Adjust integral constant
-        double kd = 0.01; // Adjust derivative constant
+        double kp = 100.0; // Adjust proportional constant
+        double ki = 1.0; // Adjust integral constant
+        double kd = 1.0; // Adjust derivative constant
 
         double integral = 0;
         double prevError = 0;
