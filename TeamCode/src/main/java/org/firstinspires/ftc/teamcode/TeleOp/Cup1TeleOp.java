@@ -157,7 +157,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                         Hang.setPower(gamepad2.left_stick_y);
                     }
                 if (gamepad1.y) {
-                    topPosition = hang.getCurrentPosition();
+                    topPosition = Hang.getCurrentPosition();
+                }
+                if (gamepad1.a) {
+                    Hang.setTargetPosition((int) topPosition);
+                    Hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    Hang.setPower(1);
+                } else if (gamepad1.b) {
+                    Hang.setTargetPosition(0);
+                    Hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    Hang.setPower(1);
+                } else if (Hang.getCurrentPosition()<=1) {
+                    Hang.setPower(0);
+                    Hang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
                 }
 
