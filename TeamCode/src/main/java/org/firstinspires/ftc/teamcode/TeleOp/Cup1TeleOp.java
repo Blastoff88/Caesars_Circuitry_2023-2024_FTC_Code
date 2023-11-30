@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         public float lb_power = 0.0F;
         public float rf_power = 0.0F;
         public float rb_power = 0.0F;
+    public double topPosition = 0;
     private ElapsedTime runtime = new ElapsedTime();
     public boolean isOverriden = false;
 
@@ -136,13 +137,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                 if (gamepad2.right_trigger > 0 || gamepad1.right_trigger > 0) {
                     wall.setPosition(.29);
                 }
-                if(gamepad2.a && gamepad1.a){
+                if(gamepad2.x && !isOverriden){
                     isOverriden = true;
-                }
-                if(gamepad2.b){
+                } else if (gamepad2.x && isOverriden) {
                     isOverriden = false;
                 }
-                if(getRuntime()>=90 || isOverriden){
+
+            if(getRuntime()>=90 || isOverriden){
                     if(gamepad2.left_bumper){
                         Plane.setPosition(1);
 
@@ -155,6 +156,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
                     if(gamepad2.left_stick_y !=0){
                         Hang.setPower(gamepad2.left_stick_y);
                     }
+                if (gamepad1.y) {
+                    topPosition = hang.getCurrentPosition();
+                }
                 }
 
             }

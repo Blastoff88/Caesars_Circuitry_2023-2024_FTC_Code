@@ -6,10 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
 @Autonomous
-public class TestAuto extends LinearOpMode {
+public class Zacs_Test_Autonomous extends LinearOpMode {
 
     public DcMotor frontLeft;
     public DcMotor backLeft;
@@ -17,6 +15,8 @@ public class TestAuto extends LinearOpMode {
     public DcMotor backRight;
 
     public IMU imu;
+
+
 
     @Override
     public void runOpMode() {
@@ -47,14 +47,39 @@ public class TestAuto extends LinearOpMode {
         ));
         imu.initialize(parameters);
 
+
         waitForStart();
 
         while (opModeIsActive()) {
+            imu.resetYaw();
+            move(83.82, .5);
+            move(83,.5);
 
         }
     }
 
-    public void findDistance(double starting){}
+    public void move(double distance, double speed) {
+        reset(true,false);
+        double totalDistance = distance * ((9.6*Math.PI) / 537.7);
+        double sectionLength = totalDistance/3;
+
+        double accelerationFactor = speed-0.05/sectionLength;
+        double decelerationFactor = -speed/sectionLength;
+
+        double currentPosition = 0;
+        while (currentPosition < totalDistance) {
+            frontLeft.setPower(accelerationFactor*frontLeft.getCurrentPosition()+.1);
+            frontRight.setPower(accelerationFactor*frontRight.getCurrentPosition()+.1);
+            backLeft.setPower(accelerationFactor*backLeft.getCurrentPosition()+.1);
+            backRight.setPower(accelerationFactor*backRight.getCurrentPosition()+.1);
+        }
+        while (currentPosition < totalDistance) {
+            frontLeft.setPower(decelerationFactor-.1);
+            frontRight.setPower(decelerationFactor-.1);
+            backLeft.setPower(decelerationFactor-.1);
+            backRight.setPower(decelerationFactor-.1);
+        }
+    }
     public void reset(boolean encoderReset, boolean imuReset) {
         if(encoderReset) {
             frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -72,4 +97,5 @@ public class TestAuto extends LinearOpMode {
             imu.resetYaw();
         }
     }
-    }
+
+}
