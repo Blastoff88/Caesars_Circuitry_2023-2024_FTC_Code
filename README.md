@@ -4,7 +4,7 @@ Welcome to the Caesar's Circuitry GitHub repository! This repository contains th
 
 ## About Caesar's Circuitry
 -----
-Caesar's Circuitry is a rookie FTC (FIRST Tech Challenge) robotics team affiliated with the Alabama School of Cyber Technology and Engineering (ASCTE) based in Huntsville, Alabama. We're excited to take on the Centerstage Challenge in our inaugural year and share our journey with the world.
+Caesar's Circuitry is a rookie FTC (FIRST Tech Challenge) robotics team based in Huntsville, Alabama. We're excited to take on the Centerstage Challenge in our inaugural year and share our journey with the world.
 
 ## Repository Contents
 -----
