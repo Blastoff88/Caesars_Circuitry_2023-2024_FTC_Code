@@ -174,11 +174,11 @@ public class Cup2TeleOp_FieldCentric extends OpMode {
                 Plane.setPosition(.7);
 
             }
-            if(gamepad1.a){
+            if(gamepad2.a){
                 GetHangPos = HangPos.EXTEND;
-            } else if (gamepad1.b) {
+            } else if (gamepad2.b) {
                 GetHangPos = HangPos.RETRACT;
-            } else if (gamepad1.x) {
+            } else if (gamepad2.x) {
                 GetHangPos = HangPos.OFF;
             }
         if (GetHangPos == HangPos.EXTEND) {
