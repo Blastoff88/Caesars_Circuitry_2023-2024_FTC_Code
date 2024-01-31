@@ -1,19 +1,12 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
-
+package org.firstinspires.ftc.teamcode.Autonomous.Cup2;
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -24,15 +17,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "OpenCVBlue Testing")
-@Config
-public class opencvBlue extends LinearOpMode {
-    public static double minB = 100;
-    public static double minG = 50;
-    public static double minR = 50;
-    public static double maxB = 140;
-    public static double maxG = 255;
-    public static double maxR = 255;
+@TeleOp(name = "OpenCVRed Testing")
+@Disabled
+public class opencvRed extends LinearOpMode {
+
     double cX = 0;
     double cY = 0;
     double width = 0;
@@ -60,7 +48,6 @@ public class opencvBlue extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Coordinate", "(" + (int) cX + ", " + (int) cY + ")");
             telemetry.addData("Distance in Inch", (getDistance(width)));
-            telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
             telemetry.update();
 
             // The OpenCV pipeline automatically processes frames and handles detection
@@ -130,8 +117,9 @@ public class opencvBlue extends LinearOpMode {
             Mat hsvFrame = new Mat();
             Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
-            Scalar lowerYellow = new Scalar(minB,minG,minR);
-            Scalar upperYellow = new Scalar(maxB,maxG,maxR);
+            Scalar lowerYellow = new Scalar(100, 100, 100);
+            Scalar upperYellow = new Scalar(180, 255, 255);
+
 
             Mat yellowMask = new Mat();
             Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);
